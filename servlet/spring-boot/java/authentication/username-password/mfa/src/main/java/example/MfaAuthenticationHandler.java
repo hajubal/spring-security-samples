@@ -65,7 +65,19 @@ public class MfaAuthenticationHandler implements AuthenticationSuccessHandler, A
 
 	private void saveMfaAuthentication(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		SecurityContextHolder.getContext().setAuthentication(new MfaAuthentication(authentication));
+
+		Object object = authentication.getPrincipal();
+
+		if (object instanceof CustomUserRepositoryUserDetailsService.CustomUserDetails userDetails) {
+			if (userDetails.isUseMfa()) {
+				authentication = new MfaAuthentication(authentication);
+			} else {
+				((SimpleUrlAuthenticationSuccessHandler)this.successHandler).setDefaultTargetUrl("/");
+			}
+		}
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
 		this.successHandler.onAuthenticationSuccess(request, response, authentication);
 	}
 

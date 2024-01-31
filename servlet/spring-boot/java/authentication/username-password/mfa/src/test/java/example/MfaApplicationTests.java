@@ -45,6 +45,27 @@ public class MfaApplicationTests {
 	private MockMvc mockMvc;
 
 	@Test
+	void genMfaCode() throws Exception {
+		Integer code = TimeBasedOneTimePasswordUtil.generateCurrentNumberHex(hexKey);
+
+		System.out.println("code = " + code);
+	}
+
+	@Test
+	void notUseMfaUserWorks() throws Exception {
+		// @formatter:off
+		MvcResult result = this.mockMvc.perform(formLogin()
+				.user("user2@example.com")
+				.password("password"))
+				.andExpect(redirectedUrl("/"))
+				.andReturn();
+
+		HttpSession session = result.getRequest().getSession();
+
+		//@formatter:on
+	}
+
+	@Test
 	void mfaWhenAllFactorsSucceedMatchesThenWorks() throws Exception {
 		// @formatter:off
 		MvcResult result = this.mockMvc.perform(formLogin()

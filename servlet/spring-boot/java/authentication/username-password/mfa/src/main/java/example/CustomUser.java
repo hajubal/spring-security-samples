@@ -39,17 +39,21 @@ public class CustomUser {
 	@JsonIgnore
 	private final String answer;
 
+	@JsonIgnore
+	private final Boolean useMfa;
+
 	@JsonCreator
-	public CustomUser(long id, String email, String password, String secret, String answer) {
+	public CustomUser(long id, String email, String password, String secret, String answer, Boolean useMfa) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.secret = secret;
 		this.answer = answer;
+		this.useMfa = useMfa;
 	}
 
 	public CustomUser(CustomUser user) {
-		this(user.id, user.email, user.password, user.secret, user.answer);
+		this(user.id, user.email, user.password, user.secret, user.answer, user.useMfa);
 	}
 
 	public long getId() {
@@ -70,6 +74,10 @@ public class CustomUser {
 
 	public String getAnswer() {
 		return this.answer;
+	}
+
+	public Boolean isUseMfa() {
+		return this.useMfa;
 	}
 
 }

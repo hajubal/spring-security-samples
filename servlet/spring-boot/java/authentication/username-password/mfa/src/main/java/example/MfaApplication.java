@@ -62,9 +62,14 @@ public class MfaApplication {
 		String encodedSecurityAnswer = "{bcrypt}$2a$10$JIXMjAszy3RUu8y5T0zH0enGJCGumI8YE.K7w3wsM5xXDfeVIsJhq";
 
 		CustomUser customUser = new CustomUser(1L, "user@example.com", encodedPassword, encrypted,
-				encodedSecurityAnswer);
+				encodedSecurityAnswer, true);
+		CustomUser notUseMfaUser = new CustomUser(2L, "user2@example.com", encodedPassword, encrypted,
+				encodedSecurityAnswer, false);
+
 		Map<String, CustomUser> emailToCustomUser = new HashMap<>();
 		emailToCustomUser.put(customUser.getEmail(), customUser);
+		emailToCustomUser.put(notUseMfaUser.getEmail(), notUseMfaUser);
+
 		return new MapCustomUserRepository(emailToCustomUser);
 	}
 
