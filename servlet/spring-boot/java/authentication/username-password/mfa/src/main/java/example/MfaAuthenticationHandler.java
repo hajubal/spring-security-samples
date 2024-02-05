@@ -71,14 +71,22 @@ public class MfaAuthenticationHandler implements AuthenticationSuccessHandler, A
 		if (object instanceof CustomUserRepositoryUserDetailsService.CustomUserDetails userDetails) {
 			if (userDetails.isUseMfa()) {
 				authentication = new MfaAuthentication(authentication);
-			} else {
-				((SimpleUrlAuthenticationSuccessHandler)this.successHandler).setDefaultTargetUrl("/");
 			}
 		}
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		this.successHandler.onAuthenticationSuccess(request, response, authentication);
+		handlerSelector(object).onAuthenticationSuccess(request, response, authentication);
+	}
+
+	private AuthenticationSuccessHandler handlerSelector(Object object) {
+		if (object instanceof CustomUserRepositoryUserDetailsService.CustomUserDetails userDetails) {
+			if (!userDetails.isUseMfa()) {
+				return new SimpleUrlAuthenticationSuccessHandler("/");
+			}
+		}
+
+		return this.successHandler;
 	}
 
 }
